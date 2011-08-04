@@ -18,10 +18,7 @@ if sys.platform != 'win32':
 def pinger(host, n):
     ''' Executes the PCs ping command. '''
     proc = os.popen("ping -{0} {1} {2}".format(ping_flag, n, host))
-    lns  = proc.readlines()
-    out  = ""
-    for line in lns: out += line
-    return out
+    return ''.join(proc.readlines())
 
 # driver for ping
 def call_pinger(host, n, ping, loss, t):
