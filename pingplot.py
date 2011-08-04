@@ -180,6 +180,7 @@ def main(argv=None):
                             len(ping[nans]), 
                             str(deltat)
                             ))
+            sys.stdout.flush()
         except KeyboardInterrupt:
             break
           
