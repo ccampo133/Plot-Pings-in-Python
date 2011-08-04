@@ -5,14 +5,13 @@ import matplotlib.pyplot as plt
 
 import os
 import sys
-import msvcrt
 import time
 import re
 import datetime
 from optparse import OptionParser
 
 # software version
-version = 1.0
+__version__ = 1.0
 
 # ping
 def pinger(host, n):
@@ -48,6 +47,7 @@ def write_log(logfile, outstr):
     
 # produces ping vs time plot
 def plot_gen(ping, now, t, nans, host):
+    ''' Generates ping vs time plot '''
     datestr   = now[0].ctime().split()
     datestr   = datestr[0] + " " + datestr[1] + " " + datestr[2] + " " + datestr[-1]
     plt.figure(figsize=(25,8))
@@ -115,17 +115,17 @@ def main(argv=None):
         datestr = nowtime.isoformat()[:-7][:10]
         timestr = "{0}h{1}m{2}s".format(nowtime.hour, nowtime.minute, nowtime.second)
         stamp   = datestr + "_" + timestr
-        logname = "pingplot_v{vers:0.1}_{0}_{1}.log".format(host, stamp, vers=version)  # remove all '.'
+        logname = "pingplot_v{vers:0.1}_{0}_{1}.log".format(host, stamp, vers=__version__)  # remove all '.'
         logfile = file(logname, 'w')
-        logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(version))
+        logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(__version__))
     
     # start the main loop
-    print("PingPlot Version {0} -- by ccampo\n".format(version))
+    print("PingPlot Version {0} -- by ccampo\n".format(__version__))
     print("{0:^23}\n=======================".format("Run Parameters"))
     print("{0:>17} {1}".format("Hostname:", host))
     print("{0:>17} {1}".format("Ping interval:", str(dt) + " s"))
     print("{0:>17} {1}".format("Packets per ping:", n))
-    print("\n\nPress ESC to quit...\n")
+    print("\n\nPress CTRL+C to quit...\n")
     print("{0:^15} {1:^15} {2:^15} {3:^15} {4:^15}\n"
             .format(
             "AVG. PING", 
@@ -136,40 +136,41 @@ def main(argv=None):
             ))
             
     while True:
-        # quit on escape
-        if msvcrt.kbhit() and ord(msvcrt.getch()) == 27: break	
-            
-        # ping and parse; print results
-        ping, loss, t, out = call_pinger(host, n, ping, loss, t)
-        now  = np.append(now, datetime.datetime.now())
-        cnt += 1
+        # quit on ctrl+c
+        try:            
+            # ping and parse; print results
+            ping, loss, t, out = call_pinger(host, n, ping, loss, t)
+            now  = np.append(now, datetime.datetime.now())
+            cnt += 1
         
-        # get ping data
-        mloss = loss.mean()
-        nans  = np.isnan(ping)
-        if len(ping[~nans]) > 0:
-            mping = ping[~np.isnan(ping)].mean()
-        else:
-            mping = np.nan
+            # get ping data
+            mloss = loss.mean()
+            nans  = np.isnan(ping)
+            if len(ping[~nans]) > 0:
+                mping = ping[~np.isnan(ping)].mean()
+            else:
+                mping = np.nan
         
-        # write log if specified
-        if opts.log:
-            write_log(logfile, out)
+            # write log if specified
+            if opts.log:
+                write_log(logfile, out)
         
-        # only ping after time dt
-        time.sleep(float(dt))
+            # only ping after time dt
+            time.sleep(float(dt))
         
-        # print results
-        deltat = datetime.timedelta(seconds=(round(time.time() - t[0], 0)))
-        sys.stdout.write("\r{0:^15.8} {1:^15.10} {2:^15} {3:^15} {4:^15}"
-                        .format(
-                        str(round(mping, 2))+" ms", 
-                        str(round(mloss, 2))+" %",
-                        cnt*n, 
-                        len(ping[nans]), 
-                        str(deltat)
-                        ))
-    
+            # print results
+            deltat = datetime.timedelta(seconds=(round(time.time() - t[0], 0)))
+            sys.stdout.write("\r{0:^15.8} {1:^15.10} {2:^15} {3:^15} {4:^15}"
+                            .format(
+                            str(round(mping, 2))+" ms", 
+                            str(round(mloss, 2))+" %",
+                            cnt*int(n), 
+                            len(ping[nans]), 
+                            str(deltat)
+                            ))
+        except KeyboardInterrupt:
+            break
+          
     print("\n")
     # close log file
     if opts.log:
