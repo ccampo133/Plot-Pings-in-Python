@@ -90,7 +90,7 @@ def main(argv=None):
                       help="save plot to FILE")	  
     parser.add_option("-H", "--host", dest="host", default="google.com", 
                       help="the url or ip address to ping [default: %default]")
-    parser.add_option("-n", "--num", dest="n", default=1, 
+    parser.add_option("-n", "--num", dest="n", default=1, type='int',
                       help="the number of packets to send on each ping iteration [default: %default]")
     parser.add_option("-t", "--dt", dest="dt", default=0.5, 
                       help="the time interval (seconds) in which successive pings are sent [default: %default s]")
@@ -164,7 +164,7 @@ def main(argv=None):
                             .format(
                             str(round(mping, 2))+" ms", 
                             str(round(mloss, 2))+" %",
-                            cnt*int(n), 
+                            cnt*n, 
                             len(ping[nans]), 
                             str(deltat)
                             ))
