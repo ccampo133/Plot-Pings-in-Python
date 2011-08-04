@@ -1,7 +1,4 @@
 import numpy as np
-import matplotlib
-matplotlib.use("WXAgg")
-import matplotlib.pyplot as plt
 
 import os
 import sys
@@ -57,8 +54,12 @@ def write_log(logfile, outstr):
     return
     
 # produces ping vs time plot
-def plot_gen(ping, now, t, nans, host):
+def plot_gen(ping, now, t, nans, host,interactive=False):
     ''' Generates ping vs time plot '''
+    if not interactive:
+        import matplotlib
+        matplotlib.use("Agg") # no need to load gui toolkit, can run headless
+    import matplotlib.pyplot as plt
     datestr   = now[0].ctime().split()
     datestr   = datestr[0] + " " + datestr[1] + " " + datestr[2] + " " + datestr[-1]
     plt.figure(figsize=(25,8))
@@ -85,7 +86,7 @@ def plot_gen(ping, now, t, nans, host):
     # add the red bars for bad pings
     for i in range(len(start)):
         plt.axvspan(now[start[i]], now[finish[i]+1], color='red')
-    return
+    return plt
         
 # main
 def main(argv=None):
@@ -179,6 +180,7 @@ def main(argv=None):
                             len(ping[nans]), 
                             str(deltat)
                             ))
+            sys.stdout.flush()
         except KeyboardInterrupt:
             break
           
@@ -194,17 +196,15 @@ def main(argv=None):
         if len(ping[~nans]) == 0:
             print("Error: cannot generate plot; no data collected. Please check your connection.")
             return 2
-        else:
-            plot_gen(ping, now, t, nans, host)
-    
-    # save if applicable
-    if opts.fname:
-        print("Saved plot %s" % opts.fname)
-        plt.savefig(opts.fname)
-    
-    # show plot if specified
-    if opts.plot:
-        plt.show()
+        plt = plot_gen(ping, now, t, nans, host, opts.plot)
+        # save if applicable
+        if opts.fname:
+            print("Saved plot %s" % opts.fname)
+            plt.savefig(opts.fname)
+        
+        # show plot if specified
+        if opts.plot:
+            plt.show()
         
     return 2	# exit
         
