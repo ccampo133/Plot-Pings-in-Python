@@ -1,13 +1,16 @@
 PingPlot Version 1.0
 =====================
 Author: Christopher Campo
-Email:	ccampo@gmail.com
+Email:	ccampo.progs@gmail.com
 
 PingPlot is a Python script which pings a given host
 and records the latency of each ping as a function of
 time.  When you choose to stop, a plot is generated
 showing your latency to the host as a function of time
 since the startup of the program.
+
+It utilizes numerous Python libraries and especially 
+takes advantage of Matplotlib, Numpy, and wxPython.
 
 If you experience a timeout (100% packet loss) for a 
 certain amount of time, the plot shows a red-shaded area 
@@ -28,9 +31,14 @@ append any of the options/arguments below to the target
 field.  To run the program with these arguments, just
 run the shortcut.
 
+For convience, I have included a Windows installer,
+which will allow one to run the program as a binary.
+You can download the installer from:
+http://github.com/downloads/ccampo133/PingPlot/pingplot_v1.0_setup.exe
+
 If you have any questions/comments, please feel free
-to email me at ccampo@gmail.com or through my github
-account, github.com/ccampo133.
+to email me at ccampo.progs@gmail.com or through my
+github page, github.com/ccampo133.
 
 Cheers
 
