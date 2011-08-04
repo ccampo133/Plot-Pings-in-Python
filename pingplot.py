@@ -13,10 +13,14 @@ from optparse import OptionParser
 # software version
 __version__ = 1.0
 
+ping_flag='n'
+if sys.platform != 'win32':
+    ping_flag='c'
+
 # ping
 def pinger(host, n):
     ''' Executes the PCs ping command. '''
-    proc = os.popen("ping -n {0} {1}".format(n, host))
+    proc = os.popen("ping -{0} {1} {2}".format(ping_flag, n, host))
     lns  = proc.readlines()
     out  = ""
     for line in lns: out += line
@@ -27,8 +31,15 @@ def call_pinger(host, n, ping, loss, t):
     ''' Calls the pinger function and returns results as arrays. '''
     out   = pinger(host, n)
     try:    
-        lossi = float(re.search("\d+(?=% loss)", out).group(0))
-        pingi = float(re.search("(?<=Average =) \d+", out).group(0))
+        if sys.platform == 'win32':
+            lossi = float(re.search("\d+(?=% loss)", out).group(0))
+            pingi = float(re.search("(?<=Average =) \d+", out).group(0))
+        else:
+            # the next two lines asume this format:
+            # 4 packets transmitted, 4 received, 0% packet loss, time 3002ms
+            # rtt min/avg/max/mdev = 24.146/63.155/128.436/42.823 ms
+            lossi = float(re.search("\d+(?=% packet loss)", out).group(0))
+            pingi = float(out.split('/')[-3])
     except:
         pingi = np.nan # bad connection
         lossi = 100.
