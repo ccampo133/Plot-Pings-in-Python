@@ -50,7 +50,6 @@ def write_log(logfile, outstr):
 def plot_gen(ping, now, t, nans, host):
     datestr   = now[0].ctime().split()
     datestr   = datestr[0] + " " + datestr[1] + " " + datestr[2] + " " + datestr[-1]
-    startdate = time.ctime(t[0])
     plt.figure(figsize=(25,8))
     plt.plot(now[~nans], ping[~nans], drawstyle='steps')
     plt.title("Ping Results for {0}".format(host))
