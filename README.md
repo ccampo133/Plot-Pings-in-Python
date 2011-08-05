@@ -1,9 +1,6 @@
-PingPlot Version 1.0
-=====================
-Author: Christopher Campo
---------------------------
-Email:	ccampo.progs@gmail.com
-------------------------------
+# PingPlot Version 1.0
+#### Author: Christopher Campo
+#### Email:	ccampo.progs@gmail.com
 
 PingPlot is a Python script which pings a given host and records the latency of each ping as a function of time.  When you choose to stop, a plot is generated showing your latency to the host as a function of time since the startup of the program.  It utilizes numerous Python libraries and especially takes advantage of Matplotlib and Numpy
 
@@ -19,8 +16,7 @@ This application was inspired by [PingPlotter](http://www.pingplotter.com/), whi
 
 Cheers
 
-Example plot (the red bars indicate timeouts):
-----------------------------------------------
+#### Example plot (the red bars indicate timeouts):
 ![](https://github.com/ccampo133/PingPlot/raw/5a392f68c627041c263824bd0694db46f6060a7e/example_plot.png)
 
     Usage: pingplot.exe (or .py) [options]
