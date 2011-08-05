@@ -20,7 +20,7 @@ def pinger(host, n):
     proc = os.popen("ping -{0} {1} {2}".format(ping_flag, n, host))
     return ''.join(proc.readlines())
 
-# driver for ping
+# wrapper for ping
 def call_pinger(host, n, ping, loss, t):
     ''' Calls the pinger function and returns results as arrays. '''
     out   = pinger(host, n)
@@ -51,15 +51,17 @@ def write_log(logfile, outstr):
     return
     
 # produces ping vs time plot
-def plot_gen(ping, now, t, nans, host,interactive=False):
+def plot_gen(ping, now, t, nans, host, interactive=False, size="1280x640"):
     ''' Generates ping vs time plot '''
     if not interactive:
         import matplotlib
         matplotlib.use("Agg") # no need to load gui toolkit, can run headless
     import matplotlib.pyplot as plt
+    
+    size      = [int(dim) for dim in size.split('x')]
     datestr   = now[0].ctime().split()
     datestr   = datestr[0] + " " + datestr[1] + " " + datestr[2] + " " + datestr[-1]
-    plt.figure(figsize=(25,8))
+    plt.figure(figsize=(size[0]/80.,size[1]/80.)) # dpi is 80
     plt.plot(now[~nans], ping[~nans], drawstyle='steps')
     plt.title("Ping Results for {0}".format(host))
     plt.ylabel("Latency [ms]")
@@ -99,18 +101,18 @@ def main(argv=None):
                       help="save plot to FILE")	  
     parser.add_option("-H", "--host", dest="host", default="google.com", 
                       help="the url or ip address to ping [default: %default]")
-    parser.add_option("-n", "--num", dest="n", default=1, type='int',
+    parser.add_option("-n", "--num", dest="n", default=1, type="int",
                       help="the number of packets to send on each ping iteration [default: %default]")
-    parser.add_option("-t", "--dt", dest="dt", default=0.5, 
+    parser.add_option("-t", "--dt", dest="dt", default=0.5, type="float",
                       help="the time interval (seconds) in which successive pings are sent [default: %default s]")
     parser.add_option("-l", "--log", dest="log", action="store_true",
                       help="save a logfile of the event in the current directory.")
-        
+    parser.add_option("-s", "--size", dest="size", default="1280x640",
+                      help="If plotting/saving a plot, this is the plot's dimensions"\
+                      "in pixels (at 80 DPI) in the format XxY [default: 1280x640]")
+                      
     # unpack and initialize data
     opts, args = parser.parse_args(argv)
-    host = opts.host
-    n    = opts.n
-    dt   = opts.dt
     ping = np.array([])
     loss = np.array([])
     t    = np.array([])
@@ -124,16 +126,16 @@ def main(argv=None):
         datestr = nowtime.isoformat()[:-7][:10]
         timestr = "{0}h{1}m{2}s".format(nowtime.hour, nowtime.minute, nowtime.second)
         stamp   = datestr + "_" + timestr
-        logname = "pingplot_v{vers:0.1}_{0}_{1}.log".format(host, stamp, vers=__version__)  # remove all '.'
+        logname = "pingplot_v{vers:0.1}_{0}_{1}.log".format(opts.host, stamp, vers=__version__)  # remove all '.'
         logfile = file(logname, 'w')
         logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(__version__))
     
     # start the main loop
     print("PingPlot Version {0} -- by ccampo\n".format(__version__))
     print("{0:^23}\n=======================".format("Run Parameters"))
-    print("{0:>17} {1}".format("Hostname:", host))
-    print("{0:>17} {1}".format("Ping interval:", str(dt) + " s"))
-    print("{0:>17} {1}".format("Packets per ping:", n))
+    print("{0:>17} {1}".format("Hostname:", opts.host))
+    print("{0:>17} {1}".format("Ping interval:", str(opts.dt) + " s"))
+    print("{0:>17} {1}".format("Packets per ping:", opts.n))
     print("\n\nPress CTRL+C to quit...\n")
     print("{0:^15} {1:^15} {2:^15} {3:^15} {4:^15}\n"
             .format(
@@ -148,7 +150,7 @@ def main(argv=None):
         # quit on ctrl+c
         try:            
             # ping and parse; print results
-            ping, loss, t, out = call_pinger(host, n, ping, loss, t)
+            ping, loss, t, out = call_pinger(opts.host, opts.n, ping, loss, t)
             now  = np.append(now, datetime.datetime.now())
             cnt += 1
         
@@ -165,7 +167,7 @@ def main(argv=None):
                 write_log(logfile, out)
         
             # only ping after time dt
-            time.sleep(float(dt))
+            time.sleep(opts.dt)
         
             # print results
             deltat = datetime.timedelta(seconds=(round(time.time() - t[0], 0)))
@@ -173,7 +175,7 @@ def main(argv=None):
                             .format(
                             str(round(mping, 2))+" ms", 
                             str(round(mloss, 2))+" %",
-                            cnt*n, 
+                            cnt*opts.n, 
                             len(ping[nans]), 
                             str(deltat)
                             ))
@@ -193,7 +195,7 @@ def main(argv=None):
         if len(ping[~nans]) == 0:
             print("Error: cannot generate plot; no data collected. Please check your connection.")
             return 2
-        plt = plot_gen(ping, now, t, nans, host, opts.plot)
+        plt = plot_gen(ping, now, t, nans, opts.host, opts.plot, opts.size)
         # save if applicable
         if opts.fname:
             print("Saved plot %s" % opts.fname)
