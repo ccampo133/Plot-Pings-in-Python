@@ -97,8 +97,8 @@ def main(argv=None):
     parser = OptionParser()
     parser.add_option("-p", "--plot", dest="plot", action="store_true",
                       help="generates plot after data collection is finished")
-    parser.add_option("-f", "--file", dest="fname", metavar="FILE", 
-                      help="save plot to FILE")	  
+    parser.add_option("-f", "--file", dest="fsave", action="store_true", 
+                      help="save plot to file in the current directory")	  
     parser.add_option("-H", "--host", dest="host", default="google.com", 
                       help="the url or ip address to ping [default: %default]")
     parser.add_option("-n", "--num", dest="n", default=1, type="int",
@@ -106,7 +106,7 @@ def main(argv=None):
     parser.add_option("-t", "--dt", dest="dt", default=0.5, type="float",
                       help="the time interval (seconds) in which successive pings are sent [default: %default s]")
     parser.add_option("-l", "--log", dest="log", action="store_true",
-                      help="save a logfile of the event in the current directory.")
+                      help="save a logfile of the event in the current directory")
     parser.add_option("-s", "--size", dest="size", default="1280x640",
                       help="If plotting/saving a plot, this is the plot's dimensions"\
                       "in pixels (at 80 DPI) in the format XxY [default: 1280x640]")
@@ -120,15 +120,17 @@ def main(argv=None):
     cnt  = 0
     
     # write log if specified
-    if opts.log:
+    if opts.log or opts.fsave:
         # get timestamp
         nowtime = datetime.datetime.now()
         datestr = nowtime.isoformat()[:-7][:10]
         timestr = "{0}h{1}m{2}s".format(nowtime.hour, nowtime.minute, nowtime.second)
         stamp   = datestr + "_" + timestr
-        logname = "pingplot_v{vers:0.1}_{0}_{1}.log".format(opts.host, stamp, vers=__version__)  # remove all '.'
-        logfile = file(logname, 'w')
-        logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(__version__))
+        logname = "pingplot_v{vers:0.1f}_{0}_{1}.log".format(opts.host, stamp, vers=__version__)  # remove all '.'
+        plotname = "pingplot_v{vers:0.1f}_{0}_{1}.png".format(opts.host, stamp, vers=__version__)  # remove all '.'
+        if opts.log:
+            logfile = open(logname, 'w')
+            logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(__version__))
     
     # start the main loop
     print("PingPlot Version {0} -- by ccampo\n".format(__version__))
@@ -190,16 +192,16 @@ def main(argv=None):
         logfile.close()
         
     # make plot to save
-    if opts.fname or opts.plot:
+    if opts.fsave or opts.plot:
         # check if any data was collected
         if len(ping[~nans]) == 0:
             print("Error: cannot generate plot; no data collected. Please check your connection.")
             return 2
         plt = plot_gen(ping, now, t, nans, opts.host, opts.plot, opts.size)
         # save if applicable
-        if opts.fname:
-            print("Saved plot %s" % opts.fname)
-            plt.savefig(opts.fname)
+        if opts.fsave:
+            print("Saved plot %s" % plotname)
+            plt.savefig(plotname)
         
         # show plot if specified
         if opts.plot:
