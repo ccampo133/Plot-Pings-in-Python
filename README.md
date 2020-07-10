@@ -20,17 +20,17 @@ Cheers
 ![](https://github.com/ccampo133/PingPlot/raw/5a392f68c627041c263824bd0694db46f6060a7e/example_plot.png)
 
     Usage: pingplot.exe (or .py) [options]
-    
+
     Options:
       -h, --help            show this help message and exit
       -p, --plot            generates plot after data collection is finished
-      -f FILE, --file=FILE  save plot to FILE
+      -f, --file            save plot to file in the current directory
       -H HOST, --host=HOST  the url or ip address to ping [default: google.com]
       -n N, --num=N         the number of packets to send on each ping iteration
                             [default: 1]
       -t DT, --dt=DT        the time interval (seconds) in which successive pings
                             are sent [default: 0.5 s]
-      -l, --log             save a logfile of the event in the current directory.
+      -l, --log             save a logfile of the event in the current directory
       -s SIZE, --size=SIZE  If plotting/saving a plot, this is the plot's
                             dimensionsin pixels (at 80 DPI) in the format XxY
                             [default: 1280x640]
