@@ -23,7 +23,7 @@ This application was inspired by [PingPlotter](http://www.pingplotter.com/), whi
 of this software.
 
 ### Example plot (the red bars indicate timeouts):
-![](https://github.com/ccampo133/PingPlot/raw/5a392f68c627041c263824bd0694db46f6060a7e/example_plot.png)
+![](example/example_plot.png)
 
 ## Usage
 

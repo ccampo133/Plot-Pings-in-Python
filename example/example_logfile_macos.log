@@ -1,0 +1,74 @@
+PingPlot Version 1.1.0 - Log File
+
+TIME: Wed Nov 18 11:51:36 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=28.331 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 28.331/28.331/28.331/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:36 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=33.934 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 33.934/33.934/33.934/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:37 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=23.346 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 23.346/23.346/23.346/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:38 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=20.066 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 20.066/20.066/20.066/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:38 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=19.690 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 19.690/19.690/19.690/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:39 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=22.099 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 22.099/22.099/22.099/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:39 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=19.086 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 19.086/19.086/19.086/0.000 ms
+
+
+TIME: Wed Nov 18 11:51:40 2020
+PING example.com (93.184.216.34): 56 data bytes
+64 bytes from 93.184.216.34: icmp_seq=0 ttl=55 time=22.191 ms
+
+--- example.com ping statistics ---
+1 packets transmitted, 1 packets received, 0.0% packet loss
+round-trip min/avg/max/stddev = 22.191/22.191/22.191/0.000 ms
+
+
