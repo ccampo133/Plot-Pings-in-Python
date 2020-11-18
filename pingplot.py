@@ -48,10 +48,9 @@ def call_pinger(host, n, ping, loss, t):
 
 
 # writes out to the log file
-def write_log(logfile, outstr):
+def write_log(log_file, log_body):
     """Writes results to a log file"""
-    timestr = f"TIME: {datetime.datetime.now().ctime()}"
-    logfile.write(timestr + outstr + "\n\n")
+    log_file.write(f"TIME: {datetime.datetime.now().ctime()}\n{log_body}\n\n")
 
 
 # produces ping vs time plot
@@ -111,7 +110,7 @@ def main(argv=None):
     parser.add_option("-t", "--dt", dest="dt", default=0.5, type="float",
                       help="the time interval (seconds) in which successive pings are sent [default: %default s]")
     parser.add_option("-l", "--log", dest="log", action="store_true",
-                      help="save a logfile of the event in the current directory")
+                      help="save a log file of the event in the current directory")
     parser.add_option("-s", "--size", dest="size", default="1280x640",
                       help="If plotting/saving a plot, this is the plot's dimensions" \
                            "in pixels (at 80 DPI) in the format XxY [default: 1280x640]")
@@ -133,8 +132,8 @@ def main(argv=None):
         log_name = f"pingplot_v{__version__}_{opts.host}_{stamp}.log"
         plot_name = f"pingplot_v{__version__}_{opts.host}_{stamp}.png"
         if opts.log:
-            logfile = open(log_name, 'w')
-            logfile.write(f"PingPlot Version {__version__} - Log File\n\n\n")
+            log_file = open(log_name, 'w')
+            log_file.write(f"PingPlot Version {__version__} - Log File\n\n\n")
 
     # start the main loop
     print(f"PingPlot Version {__version__} -- by ccampo\n")
@@ -162,7 +161,7 @@ def main(argv=None):
                 mean_ping = np.nan
 
             if opts.log:
-                write_log(logfile, out)
+                write_log(log_file, out)
 
             # only ping after time dt
             time.sleep(opts.dt)
@@ -181,7 +180,7 @@ def main(argv=None):
     # close log file
     if opts.log:
         print(f"Saved log file {log_name}")
-        logfile.close()
+        log_file.close()
 
     # make plot to save
     if opts.fsave or opts.plot:
