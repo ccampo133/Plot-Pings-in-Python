@@ -25,6 +25,8 @@ of this software.
 ### Example plot (the red bars indicate timeouts):
 ![](example/example_plot.png)
 
+See the [example](example) directory for example log files.
+
 ## Usage
 
 This assumes you have Python (3+) installed on your system.
