@@ -18,7 +18,7 @@ if sys.platform != 'win32':
 # ping
 def pinger(host, n):
     """Executes the PCs ping command"""
-    proc = os.popen("ping -{0} {1} {2}".format(ping_flag, n, host))
+    proc = os.popen(f"ping -{ping_flag} {n} {host}")
     return ''.join(proc.readlines())
 
 
@@ -50,7 +50,7 @@ def call_pinger(host, n, ping, loss, t):
 # writes out to the log file
 def write_log(logfile, outstr):
     """Writes results to a log file"""
-    timestr = "TIME: {0}".format(datetime.datetime.now().ctime())
+    timestr = f"TIME: {datetime.datetime.now().ctime()}"
     logfile.write(timestr + outstr + "\n\n")
 
 
@@ -67,9 +67,9 @@ def plot_gen(ping, now, nans, host, interactive=False, size="1280x640"):
     datestr = datestr[0] + " " + datestr[1] + " " + datestr[2] + " " + datestr[-1]
     plt.figure(figsize=(size[0] / 80., size[1] / 80.))  # dpi is 80
     plt.plot(now[~nans], ping[~nans], drawstyle='steps')
-    plt.title("Ping Results for {0}".format(host))
+    plt.title(f"Ping Results for {host}")
     plt.ylabel("Latency [ms]")
-    plt.xlabel("Time, {0} [GMT -{1} hrs]".format(datestr, time.timezone / 3600))
+    plt.xlabel(f"Time, {datestr} [GMT-{time.timezone // 3600}]")
     plt.xticks(size=10)
     plt.yticks(size=10)
     plt.ylim(ping[~nans].min() - 5, ping[~nans].max() + 5)
@@ -128,16 +128,16 @@ def main(argv=None):
     if opts.log or opts.fsave:
         now_time = datetime.datetime.now()
         date_str = now_time.isoformat()[:-7][:10]
-        time_str = "{0}h{1}m{2}s".format(now_time.hour, now_time.minute, now_time.second)
+        time_str = f"{now_time.hour}h{now_time.minute}m{now_time.second}s"
         stamp = date_str + "_" + time_str
-        log_name = "pingplot_v{vers:0.1f}_{0}_{1}.log".format(opts.host, stamp, vers=__version__)  # remove all '.'
-        plot_name = "pingplot_v{vers:0.1f}_{0}_{1}.png".format(opts.host, stamp, vers=__version__)  # remove all '.'
+        log_name = f"pingplot_v{__version__}_{opts.host}_{stamp}.log"
+        plot_name = f"pingplot_v{__version__}_{opts.host}_{stamp}.png"
         if opts.log:
             logfile = open(log_name, 'w')
-            logfile.write("PingPlot Version {0:0.1} - Log File\n\n\n".format(__version__))
+            logfile.write(f"PingPlot Version {__version__} - Log File\n\n\n")
 
     # start the main loop
-    print("PingPlot Version {0} -- by ccampo\n".format(__version__))
+    print(f"PingPlot Version {__version__} -- by ccampo\n")
     print("{0:^23}\n=======================".format("Run Parameters"))
     print("{0:>17} {1}".format("Hostname:", opts.host))
     print("{0:>17} {1}".format("Ping interval:", str(opts.dt) + " s"))
@@ -161,14 +161,12 @@ def main(argv=None):
             else:
                 mean_ping = np.nan
 
-            # write log if specified
             if opts.log:
                 write_log(logfile, out)
 
             # only ping after time dt
             time.sleep(opts.dt)
 
-            # print results
             delta_t = datetime.timedelta(seconds=(round(time.time() - t[0], 0)))
             sys.stdout.write("\r{0:^15.8} {1:^15.10} {2:^15} {3:^15} {4:^15}".format(str(round(mean_ping, 2)) + " ms",
                                                                                      str(round(mean_loss, 2)) + " %",
@@ -182,7 +180,7 @@ def main(argv=None):
 
     # close log file
     if opts.log:
-        print("Saved log file %s" % log_name)
+        print(f"Saved log file {log_name}")
         logfile.close()
 
     # make plot to save
@@ -195,7 +193,7 @@ def main(argv=None):
 
         # save if applicable
         if opts.fsave:
-            print("Saved plot %s" % plot_name)
+            print(f"Saved plot {plot_name}")
             plt.savefig(plot_name)
 
         # show plot if specified
