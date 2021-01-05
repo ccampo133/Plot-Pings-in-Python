@@ -15,36 +15,34 @@ if sys.platform != 'win32':
     ping_flag = 'c'
 
 
-# ping
-def pinger(host, n):
+def do_ping(host, n):
     """Executes the PCs ping command"""
     proc = os.popen(f"ping -{ping_flag} {n} {host}")
     return ''.join(proc.readlines())
 
 
 # wrapper for ping
-def call_pinger(host, n, ping, loss, t):
-    """Calls the pinger function and returns results as arrays"""
-    out = pinger(host, n)
+def extract_ping_data(raw_ping_output, pings_arr, loss_arr, t_arr, cur_time=time.time(), platform=sys.platform):
+    """Extracts ping results from the raw ping process output"""
     try:
-        if sys.platform == 'win32':
-            loss_idx = float(re.search("\d+(?=% loss)", out).group(0))
-            ping_idx = float(re.search("(?<=Average =) \d+", out).group(0))
+        if platform == 'win32':
+            packet_loss = float(re.search("\d+(?=% loss)", raw_ping_output).group(0))
+            ping_ms = float(re.search("(?<=Average =) \d+", raw_ping_output).group(0))
         else:
             # the next two lines assume this format:
             # 4 packets transmitted, 4 received, 0% packet loss, time 3002ms
             # rtt min/avg/max/mdev = 24.146/63.155/128.436/42.823 ms
-            loss_idx = float(re.search("\d+(?=% packet loss)", out).group(0))
-            ping_idx = float(out.split('/')[-3])
+            packet_loss = float(re.search("\d+(?=% packet loss)", raw_ping_output).group(0))
+            ping_ms = float(raw_ping_output.split('/')[-3])
     except:
-        ping_idx = np.nan  # bad connection
-        loss_idx = 100.
+        ping_ms = np.nan  # bad connection
+        packet_loss = 100.
 
     # append data
-    ping = np.append(ping, ping_idx)
-    loss = np.append(loss, loss_idx)
-    t = np.append(t, time.time())
-    return ping, loss, t, out
+    pings_arr = np.append(pings_arr, ping_ms)
+    loss_arr = np.append(loss_arr, packet_loss)
+    t_arr = np.append(t_arr, cur_time)
+    return pings_arr, loss_arr, t_arr
 
 
 # writes out to the log file
@@ -77,7 +75,7 @@ def plot_gen(ping, now, nans, host, interactive=False, size="1280x640"):
     start = []
     finish = []
     for i in range(len(nans)):
-        if nans[i] == True:
+        if nans[i]:
             if i == 0:
                 start.append(i)
             elif nans[i] != nans[i - 1]:
@@ -148,7 +146,8 @@ def main(argv=None):
     while True:
         # quit on ctrl+c
         try:
-            ping, loss, t, out = call_pinger(opts.host, opts.n, ping, loss, t)
+            out = do_ping(opts.host, opts.n)
+            ping, loss, t = extract_ping_data(out, ping, loss, t)
             now = np.append(now, datetime.datetime.now())
             cnt += 1
 
