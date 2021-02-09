@@ -77,17 +77,15 @@ def plot_gen(ping, now, nans, host, interactive=False, size="1280x640"):
     start = []
     finish = []
     for i in range(len(nans)):
-        if nans[i] == True:
-            if i == 0:
+        if nans[i]:
+            if i == 0 or nans[i] != nans[i - 1]:
                 start.append(i)
-            elif nans[i] != nans[i - 1]:
-                start.append(i)
-            if i != len(nans) and nans[i + 1] != nans[i]:
+            if i == len(nans) - 1 or nans[i + 1] != nans[i]:
                 finish.append(i)
 
     # add the red bars for bad pings
     for i in range(len(start)):
-        plt.axvspan(now[start[i]], now[finish[i] + 1], color='red')
+        plt.axvspan(now[start[i]], now[finish[i]], color='red')
     return plt
 
 
