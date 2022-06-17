@@ -34,7 +34,7 @@ def call_pinger(host, n, ping, loss, t):
             # the next two lines assume this format:
             # 4 packets transmitted, 4 received, 0% packet loss, time 3002ms
             # rtt min/avg/max/mdev = 24.146/63.155/128.436/42.823 ms
-            loss_idx = float(re.search("\d+(?=% packet loss)", out).group(0))
+            loss_idx = float(re.search("\d+\.\d+(?=% packet loss)", out).group(0))
             ping_idx = float(out.split('/')[-3])
     except:
         ping_idx = np.nan  # bad connection
