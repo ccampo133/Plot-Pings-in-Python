@@ -19,7 +19,7 @@ if sys.platform != 'win32':
 def pinger(host, n):
     """Executes the PCs ping command"""
     if sys.platform != 'win32':
-        proc = os.popen(f"/sbin/ping -{ping_flag} {n} {host}")
+        proc = os.popen(f"ping -{ping_flag} {n} {host}")
     else:
         proc = os.popen(f"chcp 437 | ping -{ping_flag} {n} {host}")
     result = ''.join(proc.readlines())
