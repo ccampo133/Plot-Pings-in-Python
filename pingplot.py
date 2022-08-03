@@ -21,7 +21,7 @@ def pinger(host, n):
     if sys.platform != 'win32':
         proc = os.popen(f"ping -{ping_flag} {n} {host}")
     else:
-        proc = os.popen(f"chcp 437 | ping -{ping_flag} {n} {host}")
+        proc = os.popen(f"chcp 437 & ping -{ping_flag} {n} {host}")
     result = ''.join(proc.readlines())
     proc.close()
     return result
